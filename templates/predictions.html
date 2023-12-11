@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<div class="container" style="background: #fff; height: ;">
+    <div class="row">
+    	<div class="col-md-3"></div>
+    	<div class="col-mm-9">
+        	<h2 id="pageinfo">Sales Prediction</h2>
+    	</div>
+    </div>
+    <div class="row" style="padding: ;">
+    	<div class="col-md-3"></div>
+    	
+		<div class="col-md-9" style="background: ;">
+			<div class="col-md-4" style=""> <button style="background:  #3498DB; color: #fff; width: 80%;" type="button" class="btn btn-default btn-lg tabButton" ng-click="getPredictions()" id="predictsales">Predict Sales</button>
+			</div>
+			    <!-- GET for generating CSV file. http://code.stephenmorley.org/php/creating-downloadable-csv-files/ -->
+			<div class="col-md-4">
+			    <button style="outline: 1px solid #3498DB; width: 80%; color: #73879C;" type="button" class="btn btn-default btn-lg tabButton" ng-csv="productArray" filename="Predictions.csv" field-separator="," decimal-separator=".">Generate CSV</button>
+			</div>
+			<div class="col-md-4">
+			    <button style="outline: 1px solid #3498DB; width: 80%; color: #73879C;" type="button" class="btn btn-default btn-lg tabButton" ng-click="getPredictions2()" id="prechart" onclick="clickitt()">Prediction Chart</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3"></div>
+	<div class="col-md-9 reportBox scrollable" style=" height: ; background: #fff;">
+    	<div class="row" ng-hide="predictionHide" id="tableoff" style="background: rgba(0,0,0,.1);">
+    		<div class="container">
+				<table class="table table-striped" id="tabledata">
+					<thead>
+				     	 <tr>
+					        <th>Product Name</th>
+					        <th>Product Group</th>
+					        <th>Last four weeks</th>
+					        <th>Recommended Stock</th>
+					        <th>On Hand</th>
+					        <th>To Order</th>
+				      	</tr>
+			    	</thead>
+				    <tbody>
+			      		<tr ng-repeat="product in productArray">
+					        <td>{{product.Name}}</td>
+					        <td>{{product.ProductGroup}}</td>
+					        <td ng-bind-html="product | lastFourWeeks"></td>
+					        <td id="rec">{{product.RecommendedStockLevel}}</td>
+					        <td>{{product.QuantityOnHand}}</td>
+					        <td>{{product | quantityToOrder}}</td>
+				      	</tr>
+				    </tbody>
+		   		</table>
+			</div>
+    	</div>
+    	<div class="row">
+    	</div>
+
+	</div>
+</div>
+
+<div style="margin: 10px; background: transparent; visibility: hidden;">
+	<form method="GET" action="./production/predictgraph.php" id="processform">
+		<input type="text" id="content0" name="content0" style="visibility: hidden;"></input>
+		<input type="text" id="content" name="content" style="visibility: hidden;"></input>
+		<input type="text" id="content1" name="content1" style="visibility: hidden;"></input>
+		<input type="text" id="content2" name="content2" style="visibility: hidden;"><input>
+	</form>
+</div>
+
+<style type="text/css"> #prechart { display: none; }</style>
+
+<script type="text/javascript">
+	/*var numberofrow = document.getElementById("tabledata").rows.length;
+		var numoftds = document.getElementById("tabledata").rows[0].cells.length;
+		var numoftds = document.getElementById("tabledata").rows[0].cells.item(0).innerHTML;*/
+
+	function clickitt(){
+
+		var n1 = document.getElementById("tabledata").rows.length;
+		var i =0,j=0;
+		var str0 ="";
+		var str ="";
+		var str1 ="";
+		var str2 ="";
+		for (var i = 1; i <  n1; i++) {
+			var n2 = document.getElementById("tabledata").rows[i].cells.length;
+			//for(j=0; j<n2; j++){
+				var x0 = document.getElementById("tabledata").rows[i].cells.item(0).innerHTML;
+
+				var x = document.getElementById("tabledata").rows[i].cells.item(3).innerHTML;
+				var x1 = document.getElementById("tabledata").rows[i].cells.item(4).innerHTML;
+				var x2 = document.getElementById("tabledata").rows[i].cells.item(5).innerHTML;
+				str0 = str0+"'" +x0+"'" +", ";
+				str = str+ x +", ";
+				str1 =str1+ x1+", ";
+				str2 = str2+x2+", ";
+
+			//}
+
+			//str = str+"#";
+		}
+			
+		document.getElementById("content0").value = str0;
+		document.getElementById("content").value = str;
+		document.getElementById("content1").value = str1;
+		document.getElementById("content2").value = str2;
+
+		
+		document.getElementById('processform').submit();
+	}
+</script>

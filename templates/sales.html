@@ -1,0 +1,88 @@
+<head>
+    <!-- Bootstrap -->
+
+</head>
+    
+<div class="container-fluid" style="background: #fff; padding-bottom: 20px; height: ;">
+    <div class="" style="width: 80%; float: right;">
+    	<h1>Add Sales</h1><p>To edit sales please navigate to <b>sale Reports</b>.</p>
+    </div>
+    <div class="row" style="clear:right;">
+    <!-- SIDE TABS -->
+        <div class="col-lg-3 col-md-3 col-sm-3"></div>
+    	<div class="col-sm-1">
+    	<!-- impliment second set for xs devices -->
+    		<div class="row" ><p class="sideTab" ng-class="{'selected':addSelected}" style="width: 100%;">Add</p></div>
+    		<div class="row"><p class="sideTab" ng-class="{'selected':editSelected}" style="width: 100%;">Edit</p></div>
+    	</div>
+    	<!-- INPUT FORM -->
+    	<div class="col-lg-4 col-md-4 col-sm-6 formColumn" style="background: ;height: ;">
+		<!-- OUTPUT VIEW -->
+			<form name="saleForm" class="form-group">
+                <div class="form-group">
+                	<p ng-show="!gSelected && addSelected">Please select a product group to start.</p>
+                    <label for="pGroup">Product Group:</label>
+                    <select class="form-control" id="pGroup" name="pGroup" ng-model="productGroup" ng-options="group.Name for group in productGroups" ng-change="groupSelect(productGroup.Id)" required></select>
+                </div>
+
+                <div ng-show="gSelected">
+    			    <label for="product">Product:</label>
+    			    <select class="form-control" id="product" name="product" ng-model="product" ng-options="product.name for product in products" required></select>
+                    <span class="validationError" ng-show="saleForm.$submitted && saleForm.product.$error.required">This field is required!</span>
+                    <br/>
+
+    			    <label for="qty">Quantity:</label>
+    			    <input type="number" name="saleQty" class="form-control" id="qty" ng-model="qty" ng-pattern="/^[0-9]*$/" ng-max="{{product.quantityOnHand}}" required>
+    				    <span class="validationError" ng-show="saleForm.saleQty.$error.pattern || saleForm.saleQty.$error.number">Not a valid number!</span>
+    	   				<span class="validationError" ng-show="(saleForm.saleQty.$touched || saleForm.$submitted) && saleForm.saleQty.$error.required">This field is required!</span>
+                        <span class="validationError" ng-show="saleForm.saleQty.$error.ngMax">Only {{product.quantityOnHand}} in stock!</span>
+                        <br/>
+                        <p>Click to add product(s) to sale.</p>
+    			    <button type="submit" class="btn btn-default btn-lg" ng-click="saleForm.$valid && createSaleItem(product, qty)" style="background: #1ABB9C ; color: #fff;">{{addButtonText}}</button>
+                </div>
+			</form>
+    	</div>
+    	<!-- impliment second set for xs devices -->
+    	<div class="col-lg-4 col-md-4 col-sm-6 outputTab" style="height: ;">
+    		<div>
+    			<h2>Sale Review:</h2>
+    			<div class="table-responsive">
+                    <table class="table table-striped table-hover table-condensed">
+                        <caption>Sale Details</caption>
+                        <thead>
+                            <tr>
+                                <th id="itemName">Name</th>
+                                <th id="itemQty">Qty</th>
+                                <th id="itemCost">Cost</th>
+                                <th id="editItem"></th>
+                                <th id="deleteItem"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="item in itemArray | startFrom: (currentPage - 1) * pageSize | limitTo: pageSize">
+                                <td headers="itemName">{{item.name}}</td>
+                                <td headers="itemQty">{{item.qty}}</td>
+                                <td headers="itemCost">{{item.cost | currency:"#"}}</td>
+                                <td headers="editItem"><a class="handbtn" ng-click="editItem(itemArray.indexOf(item))" style="background: #3498DB; padding: 3px; color: #fff;">Edit</a></td>
+                                <td headers="deleteItem" class="btn" ng-click="deleteItem(itemArray.indexOf(item))" style=" color: #E74C3C;">X</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" data-ng-click="previousPage()" style="background: #3498DB ; color: #fff;">Previous</button>
+                    <button type="button" class="btn btn-default">{{currentPage}}</button>
+                    <button type="button" class="btn btn-default" data-ng-click="nextPage()" style="background: #3498DB ; color: #fff;">Next</button>
+                </div>
+    		</div>
+    		<div>
+    			<h2>Total: {{totalPrice | currency:"#"}}</h2>
+    			<p>Select <b>done</b> to process sale.</p>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-lg" ng-click="commitSale()" style="background: #1ABB9C ; color: #fff;">Done</button>
+                    <button type="button" class="btn btn-default btn-lg" ng-click="cancelSale()" style="background: #E74C3C  ; color: #fff;">Cancel</button>
+                </div>
+    		</div>
+    	</div>
+    </div>
+</div>
