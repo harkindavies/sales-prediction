@@ -13,4 +13,5 @@ do{
 while (($end - $start) < $timeTarget);
 
 echo $hashpassword;
+echo "<br> All good"
 ?>
