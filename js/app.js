@@ -282,6 +282,7 @@ app.filter('startFrom', function () {
 app.controller('ReportController', function($scope, $http) {
     WEEKLY = "Weekly";
     MONTHLY = "Monthly";
+    YEARLY = "Yearly"
     ALL = "All"
     // Show select screen.
     $scope.selectHidden = false;
@@ -365,6 +366,12 @@ app.controller('ReportController', function($scope, $http) {
         $scope.reportToShow = 2;
     }
 
+    $scope.showYearly = function() {
+        $scope.hideSelect();
+        //$scope.populateSalesArray(YEARLY);
+        $scope.reportToShow = 4;
+    }
+
     $scope.showAll = function() {
         $scope.hideSelect();
         $scope.populateSalesArray(ALL);
@@ -378,6 +385,11 @@ app.controller('ReportController', function($scope, $http) {
 
     $scope.getMonthlySales = function(){
         $scope.populateSalesArray(MONTHLY);
+        $scope.hideTable = false;
+    }
+
+    $scope.getYearlySales = function(){
+        $scope.populateSalesArray(YEARLY);
         $scope.hideTable = false;
     }
 });

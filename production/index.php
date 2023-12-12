@@ -3,7 +3,7 @@
   include ('sidebar.php'); 
          
     //get all the date values
-    $startDate =  Date('Y-m-d H:i:s');
+      $startDate =  Date('Y-m-d H:i:s');
 
     //for day date
       $DendDate = new DateTime();
@@ -55,7 +55,7 @@
       }
       }
       else{
-      $daysum = 0;
+        $daysum = 0;
       }
 
       $sqlstringday2 = "SELECT Quantity FROM SaleLine WHERE saleDateTime BETWEEN '$DendDateString2' AND '$startDate'";
@@ -63,41 +63,57 @@
       $rowd2 = mysqli_num_rows($selectd2);
       $daysum2 = 0;
       if($rowd2 > 0){
-      while($dayrst2 = mysqli_fetch_array($selectd2)){
-        $daysum2 += $dayrst2['Quantity'];
-      }
-      } else{
-      $daysum2 = 0;
+        while($dayrst2 = mysqli_fetch_array($selectd2)){
+          $daysum2 += $dayrst2['Quantity'];
+        }
+      } 
+      else{
+        $daysum2 = 0;
       }
 
       //calculating the difference
       $prevdsales = $daysum2-$daysum;
       //calculating all percentage difference
       $dpercentagedif = 0;
-      if($prevdsales != 0){
-        $dpercentagedif = (($daysum - $prevdsales)/$prevdsales)*100;
-        $dpercentagedif = (int) $dpercentagedif;
+      if($prevdsales != 0 and $daysum != 0){
+        if($daysum > $prevdsales){
+          $dpercentagedif = (($daysum - $prevdsales)/$prevdsales)*100;
+          $dpercentagedif = (int) $dpercentagedif;
+
+          //adding class properties to the division
+          $dclassP1 = "green";
+          $dclassP2 = "fa fa-sort-asc";
+        }
+        elseif($daysum < $prevdsales){
+          $dpercentagedif = (($prevdsales - $daysum)/$daysum)*100;
+          $dpercentagedif = (int) $dpercentagedif;
+          
+          //adding class properties to the division
+          $dclassP1 = "red";
+          $dclassP2 = "fa fa-sort-desc";
+        }
+        
+        else{}
       }
       if ($prevdsales == 0 and $daysum != 0) {
         $dpercentagedif = 100;
         # code...
-      }
-      
-      //adding class properties to the division
-      if ($daysum > $prevdsales) {
+
         $dclassP1 = "green";
-        $dclassP2 = "fa fa-sort-asc"; 
+        $dclassP2 = "fa fa-sort-asc";
       }
-      elseif ($daysum == $prevdsales) {
-        $dclassP1 = "";
-        $dclassP2 = ""; 
-      } else{
+      if($prevdsales != 0 and $daysum == 0) {
+        $dpercentagedif = 100;
+
+        //adding class properties to the division
         $dclassP1 = "red";
         $dclassP2 = "fa fa-sort-desc";
       }
-
-
-
+      if($prevdsales ==  $daysum){
+        $dclassP1 = "";
+        $dclassP2 = "";   
+      }
+      
       //getting all the values between aparticular week range
       $sqlstringweek = "SELECT Quantity FROM SaleLine WHERE saleDateTime BETWEEN '$endDateString' AND '$startDate'";
       $selectw =  mysqli_query($conn, $sqlstringweek);
@@ -367,8 +383,8 @@
               
               <div class="col-md-2 col-sm-4  tile_stats_count">
                 <span class="count_top"><i class="fa fa-clock-o"></i> Total goods</span>
-                <div class="count"><?php echo number_format($qtysum); ?></div>
-                <span class="count_bottom">Available in stock</span>
+                <div class="count"><?php echo number_format($qtysum + $allsum); ?></div>
+                <span class="count_bottom">Available stock</span>
               </div>
             </div>
           </div>
