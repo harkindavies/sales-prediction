@@ -213,8 +213,7 @@ app.controller('SalesController', function($scope, $http, $routeParams, $locatio
         }
         $scope.totalPrice = price;
         pagenos = Math.ceil(i/5);
-        alert(pagenos);
-
+       
         //this section is use to handle the page no
         $scope.maxPage = function () {
             var result = pagenos;
