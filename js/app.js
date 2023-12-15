@@ -60,6 +60,7 @@ app.controller('SalesController', function($scope, $http, $routeParams, $locatio
     $scope.saleId = 0;
     $scope.addButtonText = 'Add';
     var salesController = this;
+    $scope.pageNo = 1;
 
     $scope.readyPage = function () {
         $scope.pageSize = 5;
@@ -120,8 +121,8 @@ app.controller('SalesController', function($scope, $http, $routeParams, $locatio
         $scope.addButtonText = 'Add';
         salesController.resetSaleLineForm();
     }
-
-    $scope.maxPage = function () {
+    
+    /*$scope.maxPage = function () {
         var result = 10;
         return result;
     };
@@ -136,7 +137,7 @@ app.controller('SalesController', function($scope, $http, $routeParams, $locatio
         if ($scope.currentPage !== 1) {
             $scope.currentPage = $scope.currentPage - 1;
         }
-    };
+    };*/
 
     $scope.cancelSale = function() {
         salesController.resetSaleLineForm();
@@ -159,7 +160,7 @@ app.controller('SalesController', function($scope, $http, $routeParams, $locatio
             //Ooops! figure out what to do here...
         });
     };
-
+    
     //Remove an item from our Items array, and update the total price
     $scope.deleteItem = function(itemIndex){
         if ($scope.itemEditing == $scope.itemArray[itemIndex]){
@@ -204,7 +205,6 @@ app.controller('SalesController', function($scope, $http, $routeParams, $locatio
             $scope.qty = $scope.itemEditing.qty;
         });
     }
-
     //Calculate the total price based on the items
     this.updateTotalPrice = function() {
         var price = 0;
@@ -212,6 +212,27 @@ app.controller('SalesController', function($scope, $http, $routeParams, $locatio
             price += $scope.itemArray[i].cost;
         }
         $scope.totalPrice = price;
+        pagenos = Math.ceil(i/5);
+        alert(pagenos);
+
+        //this section is use to handle the page no
+        $scope.maxPage = function () {
+            var result = pagenos;
+            return result;
+        };
+    
+        $scope.nextPage = function () {
+            if ($scope.currentPage !== $scope.maxPage()) {
+                $scope.currentPage = $scope.currentPage + 1;
+            }
+        };
+    
+        $scope.previousPage = function () {
+            if ($scope.currentPage !== 1) {
+                $scope.currentPage = $scope.currentPage - 1;
+            }
+        };
+        //the section that handle page no end here
     };
 
     //Load details of an existing sale from the back-end
